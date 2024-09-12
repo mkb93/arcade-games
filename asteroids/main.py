@@ -1,4 +1,6 @@
 import pygame
+import os
+import subprocess
 from constants import *
 from player import *
 from asteroid import *
@@ -77,6 +79,17 @@ def show_end_screen(screen):
                 exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 waiting = False
+                run_pacman_game()  # Start the Pacman game when spacebar is pressed
+
+def run_pacman_game():
+    # Exit the asteroids directory
+    os.chdir("..")
+    
+    # Change directory to Pacman_Complete
+    os.chdir("./Pacman_Complete")
+    
+    # Run the Pacman game script
+    subprocess.run(["python", "run.py"])
 
 def main():
     global timer_start_ticks 
@@ -150,8 +163,6 @@ def main():
         show_end_screen(screen)
     else:
         pygame.time.wait(2000)  # Small delay before restarting due to collision
-
-    main()  # Restart the game
 
 if __name__ == "__main__":
     main()
