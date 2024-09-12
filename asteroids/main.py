@@ -20,18 +20,20 @@ def main():
   Asteroid.containers = (asteroids, updatable, drawable)
   AsteroidField.containers = (updatable,)
   Shot.containers = (shots, updatable, drawable)
+  game_over = False # This variable switches to true when game ends and false again to restart the game
 
   dt = 0
   screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
   player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
   asteroidField = AsteroidField()
-  while 1 == 1:
+
+  while not game_over:
     for item in updatable:
       item.update(dt)
     for asteroid in asteroids:
       if asteroid.collision(player):
-        print('Game over!')
-        return
+        print("You got hit. Try again.") 
+        game_over = True # This ends the game.
       for shot in shots:
         if asteroid.collision(shot):
           asteroid.split()
@@ -45,5 +47,10 @@ def main():
       if event.type == pygame.QUIT:
         return
     clock.tick(60)
+    
+  if game_over:
+    pygame.time.wait(2000) # Wait 2 seconds before restarting
+    main() # Restart the game
+
 if __name__ == "__main__":
   main()
