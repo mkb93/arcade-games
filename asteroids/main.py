@@ -5,15 +5,13 @@ from asteroid import *
 from asteroidfield import *
 from shot import *
 
+# Global timer variables
 timer_start_ticks = 0  
-timer_limit = 25 
+timer_limit = 25  # Limit in seconds
 
 def display_timer(screen):
+    # Calculate elapsed time
     elapsed_time = (pygame.time.get_ticks() - timer_start_ticks) / 1000  # Convert ms to seconds
-
-    # If elapsed time exceeds the limit, stop at 25
-    if elapsed_time >= timer_limit:
-        elapsed_time = timer_limit
 
     # Render timer text
     timer_text = f"Time: {int(elapsed_time)}"
@@ -55,61 +53,72 @@ def show_start_screen(screen):
                 waiting = False  # Exit loop when spacebar is pressed
 
 def main():
-  global timer_start_ticks 
+    global timer_start_ticks 
 
-  print("Starting asteroids!")
-  print(f'Screen width: {SCREEN_WIDTH}')
-  print(f'Screen height: {SCREEN_HEIGHT}')
+    print("Starting asteroids!")
+    print(f'Screen width: {SCREEN_WIDTH}')
+    print(f'Screen height: {SCREEN_HEIGHT}')
 
-  pygame.init()
-  clock = pygame.time.Clock()
-  updatable = pygame.sprite.Group()
-  drawable = pygame.sprite.Group()
-  asteroids = pygame.sprite.Group()
-  shots = pygame.sprite.Group()
-  Player.containers = (updatable, drawable)
-  Asteroid.containers = (asteroids, updatable, drawable)
-  AsteroidField.containers = (updatable,)
-  Shot.containers = (shots, updatable, drawable)
-  game_over = False # This variable switches to true when game ends and false again to restart the game
+    pygame.init()
+    clock = pygame.time.Clock()
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
+    Player.containers = (updatable, drawable)
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = (updatable,)
+    Shot.containers = (shots, updatable, drawable)
+    game_over = False # This variable switches to true when game ends and false again to restart the game
 
-  dt = 0
-  screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-  player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-  asteroidField = AsteroidField()
-  
-  show_start_screen(screen)
-  
-  timer_start_ticks = pygame.time.get_ticks()
-
-  while not game_over:
-    for item in updatable:
-      item.update(dt)
-    for asteroid in asteroids:
-      if asteroid.collision(player):
-        print("You got hit. Try again.") 
-        game_over = True # This ends the game.
-      for shot in shots:
-        if asteroid.collision(shot):
-          asteroid.split()
-
-    dt = clock.tick()/10000
-    screen.fill('black')
+    dt = 0
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    asteroidField = AsteroidField()
     
-    for item in drawable:
-      item.draw(screen)
-      
-    pygame.display.flip()
+    show_start_screen(screen)
     
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        return
-      
-    clock.tick(60)
+    timer_start_ticks = pygame.time.get_ticks()
+
+    while not game_over:
+        # Calculate elapsed time
+        elapsed_time = (pygame.time.get_ticks() - timer_start_ticks) / 1000
+
+        if elapsed_time >= timer_limit:
+            game_over = True  # End game after 25 seconds
+            print("Time's up! You survived the asteroid field!")
+
+        for item in updatable:
+            item.update(dt)
+        for asteroid in asteroids:
+            if asteroid.collision(player):
+                print("You got hit. Try again.") 
+                game_over = True  # This ends the game.
+            for shot in shots:
+                if asteroid.collision(shot):
+                    asteroid.split()
+
+        dt = clock.tick()/10000
+        screen.fill('black')
+        
+        # Draw all game objects
+        for item in drawable:
+            item.draw(screen)
+
+        # Display the timer in the top right corner
+        display_timer(screen)
+        
+        pygame.display.flip()
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return
+        
+        clock.tick(60)
     
-  if game_over:
-    pygame.time.wait(2000) # Wait 2 seconds before restarting
-    main() # Restart the game
+    if game_over:
+        pygame.time.wait(2000)  # Wait 2 seconds before restarting
+        main()  # Restart the game
 
 if __name__ == "__main__":
     main()
