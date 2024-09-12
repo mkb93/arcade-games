@@ -65,6 +65,10 @@ while running:
         sprites.update()
         game_time = (pygame.time.get_ticks() - start_time) // 1000
         check_collision(ball, block)
+        
+        # Display the current tap count
+        draw_text(screen, f"Taps: {tap_count}/10", (configs.SCREEN_WIDTH // 2, 50), font)
+
         if ball.is_outside_circle():
             reset_game()
         ball.check_collision(sprites)
@@ -72,6 +76,8 @@ while running:
         # Display the text above the circle
         circle_rect = circle.rect
         draw_text(screen, "Tap spacebar to begin", (circle_rect.centerx, circle_rect.top - 50), font)
+        draw_text(screen, "Hit the paddle 10x", (circle_rect.centerx, circle_rect.top - 20), small_font)
+        draw_text(screen, "to progress to the next level", (circle_rect.centerx, circle_rect.top - 5), small_font)  # Reduced the gap
         draw_text(screen, f"Previous round time: {previous_game_time} seconds", (circle_rect.centerx, circle_rect.bottom + 20), small_font)
         draw_text(screen, f"Previous round taps: {previous_tap_count}", (circle_rect.centerx, circle_rect.bottom + 50), small_font)
 
