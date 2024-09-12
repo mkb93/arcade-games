@@ -11,8 +11,8 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(configs.CIRCLE_X, configs.CIRCLE_Y))
         self.mask = pygame.mask.from_surface(self.image)
 
-        self.mx = 1
-        self.my = 1
+        self.mx = 2.5
+        self.my = 2.5
 
         super().__init__(*groups)
     
@@ -54,5 +54,5 @@ class Ball(pygame.sprite.Sprite):
                     x_sign = 1
                     y_sign = -1
 
-                self.mx = random.uniform(1, 2) * x_sign
-                self.my = random.uniform(1, 2) * y_sign
+                self.mx = random.uniform(2, 3.5) * x_sign
+                self.my = random.uniform(2, 3.5) * y_sign
