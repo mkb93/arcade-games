@@ -5,7 +5,7 @@ import random
 
 class Asteroid(CircleShape):
   def __init__(self,x,y, radius):
-    # Initialize the CircleShape part of the Player
+    # Initialise CircleShape for Player
     super().__init__(x, y, radius )
   def draw(self,screen):
     pygame.draw.circle(screen,'red',self.position, self.radius, 2)
