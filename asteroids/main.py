@@ -55,56 +55,61 @@ def show_start_screen(screen):
                 waiting = False  # Exit loop when spacebar is pressed
 
 def main():
-    global timer_start_ticks 
-    print("Starting asteroids!")
-    print(f'Screen width: {SCREEN_WIDTH}')
-    print(f'Screen height: {SCREEN_HEIGHT}')
+  global timer_start_ticks 
 
-    pygame.init()
-    clock = pygame.time.Clock()
-    updatable = pygame.sprite.Group()
-    drawable = pygame.sprite.Group()
-    asteroids = pygame.sprite.Group()
-    shots = pygame.sprite.Group()
-    Player.containers = (updatable, drawable)
-    Asteroid.containers = (asteroids, updatable, drawable)
-    AsteroidField.containers = (updatable,)
-    Shot.containers = (shots, updatable, drawable)
+  print("Starting asteroids!")
+  print(f'Screen width: {SCREEN_WIDTH}')
+  print(f'Screen height: {SCREEN_HEIGHT}')
 
-    dt = 0
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    asteroidField = AsteroidField()
+  pygame.init()
+  clock = pygame.time.Clock()
+  updatable = pygame.sprite.Group()
+  drawable = pygame.sprite.Group()
+  asteroids = pygame.sprite.Group()
+  shots = pygame.sprite.Group()
+  Player.containers = (updatable, drawable)
+  Asteroid.containers = (asteroids, updatable, drawable)
+  AsteroidField.containers = (updatable,)
+  Shot.containers = (shots, updatable, drawable)
+  game_over = False # This variable switches to true when game ends and false again to restart the game
 
-    show_start_screen(screen)
+  dt = 0
+  screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+  player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+  asteroidField = AsteroidField()
+  
+  show_start_screen(screen)
+  
+  timer_start_ticks = pygame.time.get_ticks()
 
-    timer_start_ticks = pygame.time.get_ticks()
+  while not game_over:
+    for item in updatable:
+      item.update(dt)
+    for asteroid in asteroids:
+      if asteroid.collision(player):
+        print("You got hit. Try again.") 
+        game_over = True # This ends the game.
+      for shot in shots:
+        if asteroid.collision(shot):
+          asteroid.split()
 
-    while True:
-        for item in updatable:
-            item.update(dt)
-        for asteroid in asteroids:
-            if asteroid.collision(player):
-                print('Game over!')
-                return
-            for shot in shots:
-                if asteroid.collision(shot):
-                    asteroid.split()
-
-        dt = clock.tick()/10000
-        screen.fill('black')
-        for item in drawable:
-            item.draw(screen)
-        
-        display_timer(screen)
-        
-        pygame.display.flip()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return
-
-        clock.tick(60)
+    dt = clock.tick()/10000
+    screen.fill('black')
+    
+    for item in drawable:
+      item.draw(screen)
+      
+    pygame.display.flip()
+    
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        return
+      
+    clock.tick(60)
+    
+  if game_over:
+    pygame.time.wait(2000) # Wait 2 seconds before restarting
+    main() # Restart the game
 
 if __name__ == "__main__":
     main()
