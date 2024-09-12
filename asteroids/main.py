@@ -52,6 +52,32 @@ def show_start_screen(screen):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 waiting = False  # Exit loop when spacebar is pressed
 
+def show_end_screen(screen):
+    font = pygame.font.SysFont(None, 36)
+    message = (
+        "Congratulations, you lived.",
+        "Push the spacebar for your final challenge."
+    )
+
+    screen.fill('black')
+    y_offset = SCREEN_HEIGHT / 2 - 50
+    for line in message:
+        text = font.render(line, True, 'white')
+        text_rect = text.get_rect(center=(SCREEN_WIDTH / 2, y_offset))
+        screen.blit(text, text_rect)
+        y_offset += 40
+
+    pygame.display.flip()
+
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                waiting = False
+
 def main():
     global timer_start_ticks 
 
@@ -69,7 +95,8 @@ def main():
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable,)
     Shot.containers = (shots, updatable, drawable)
-    game_over = False # This variable switches to true when game ends and false again to restart the game
+    game_over = False  # This variable switches to true when game ends
+    game_won = False   # New variable to track if player survived
 
     dt = 0
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -85,6 +112,7 @@ def main():
         elapsed_time = (pygame.time.get_ticks() - timer_start_ticks) / 1000
 
         if elapsed_time >= timer_limit:
+            game_won = True  # Set to true if timer reaches limit
             game_over = True  # End game after 25 seconds
             print("Time's up! You survived the asteroid field!")
 
@@ -93,12 +121,12 @@ def main():
         for asteroid in asteroids:
             if asteroid.collision(player):
                 print("You got hit. Try again.") 
-                game_over = True  # This ends the game.
+                game_over = True  # This ends the game
             for shot in shots:
                 if asteroid.collision(shot):
                     asteroid.split()
 
-        dt = clock.tick()/10000
+        dt = clock.tick() / 10000
         screen.fill('black')
         
         # Draw all game objects
@@ -116,9 +144,14 @@ def main():
         
         clock.tick(60)
     
-    if game_over:
-        pygame.time.wait(2000)  # Wait 2 seconds before restarting
-        main()  # Restart the game
+    # If the game ends, show the appropriate end screen
+    if game_won:
+        pygame.time.wait(1000)  # Small delay before showing end screen
+        show_end_screen(screen)
+    else:
+        pygame.time.wait(2000)  # Small delay before restarting due to collision
+
+    main()  # Restart the game
 
 if __name__ == "__main__":
     main()
