@@ -1,6 +1,9 @@
 import pygame
 import configs
 import assets
+import os
+import subprocess  # To run the Asteroid game
+
 from objects.circle import Circle
 from objects.ball import Ball
 from objects.block import Block
@@ -49,6 +52,16 @@ def check_collision(ball, block):
     if pygame.sprite.collide_mask(ball, block):
         tap_count += 1
 
+def start_asteroid_game():
+    # Step 1: Move up one directory (cd ..)
+    os.chdir("..")
+    
+    # Step 2: Change to the asteroids folder (cd .\asteroids\)
+    os.chdir("./asteroids")
+    
+    # Step 3: Run the asteroid game (python main.py)
+    subprocess.run(["python", "main.py"])
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -58,8 +71,9 @@ while running:
                 if not game_active and not round_won:  # Start a new game
                     game_active = True
                     start_time = pygame.time.get_ticks()
-                elif round_won:  # Reset for the next round
-                    reset_game()
+                elif round_won:  # Reset for the next round or start the asteroid game
+                    start_asteroid_game()  # Load Asteroid game
+                    running = False  # Stop Pong game
 
     screen.fill("red")
     
