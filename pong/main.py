@@ -11,6 +11,7 @@ screen = pygame.display.set_mode((configs.SCREEN_WIDTH, configs.SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
 game_active = False  # Variable to track if the game has started
+round_won = False  # Variable to track if the player won the round
 start_time = 0
 game_time = 0
 tap_count = 0
@@ -29,13 +30,14 @@ font = pygame.font.Font(None, 36)  # Default font and size 36 for the instructio
 small_font = pygame.font.Font(None, 24)  # Smaller font for the counters
 
 def reset_game():
-    global game_active, start_time, game_time, tap_count, previous_game_time, previous_tap_count
+    global game_active, start_time, game_time, tap_count, previous_game_time, previous_tap_count, round_won
     ball.reset_position()
     previous_game_time = game_time
     previous_tap_count = tap_count
     game_time = 0
     tap_count = 0
     game_active = False  # Require spacebar to be tapped again
+    round_won = False  # Reset the round won state
 
 def draw_text(screen, text, position, font):
     text_surface = font.render(text, True, (255, 255, 255))  # White color text
@@ -52,9 +54,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and not game_active:
-                game_active = True  # Start the game when spacebar is pressed
-                start_time = pygame.time.get_ticks()
+            if event.key == pygame.K_SPACE:
+                if not game_active and not round_won:  # Start a new game
+                    game_active = True
+                    start_time = pygame.time.get_ticks()
+                elif round_won:  # Reset for the next round
+                    reset_game()
 
     screen.fill("red")
     
@@ -69,11 +74,23 @@ while running:
         # Display the current tap count
         draw_text(screen, f"Taps: {tap_count}/10", (configs.SCREEN_WIDTH // 2, 50), font)
 
+        if tap_count >= 10:  # Player has won the round
+            game_active = False
+            round_won = True
+        
         if ball.is_outside_circle():
             reset_game()
         ball.check_collision(sprites)
+    
+    elif round_won:
+        very_small_font = pygame.font.Font(None, 20)  
+        draw_text(screen, "Well done!", (configs.SCREEN_WIDTH // 2, configs.SCREEN_HEIGHT // 2 + 80), small_font)  # Use small_font for "Well done!"
+        
+        draw_text(screen, "You beat this round.", (configs.SCREEN_WIDTH // 2, configs.SCREEN_HEIGHT // 2 + 100), very_small_font)
+        draw_text(screen, "Press the spacebar to begin the next round", (configs.SCREEN_WIDTH // 2, configs.SCREEN_HEIGHT // 2 + 130), very_small_font)
+
     else:
-        # Display the text above the circle
+        # Display the text above the circle when the game hasn't started
         circle_rect = circle.rect
         draw_text(screen, "Tap spacebar to begin", (circle_rect.centerx, circle_rect.top - 50), font)
         draw_text(screen, "Hit the paddle 10x", (circle_rect.centerx, circle_rect.top - 20), small_font)

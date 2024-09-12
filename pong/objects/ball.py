@@ -54,5 +54,5 @@ class Ball(pygame.sprite.Sprite):
                     x_sign = 1
                     y_sign = -1
 
-                self.mx = random.uniform(2, 4) * x_sign
-                self.my = random.uniform(2, 4) * y_sign
+                self.mx = random.uniform(2, 3.5) * x_sign
+                self.my = random.uniform(2, 3.5) * y_sign
