@@ -10,8 +10,8 @@ pygame.init()
 screen = pygame.display.set_mode((configs.SCREEN_WIDTH, configs.SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
-game_active = False  # Variable to track if the game has started
-round_won = False  # Variable to track if the player won the round
+game_active = False  
+round_won = False  
 start_time = 0
 game_time = 0
 tap_count = 0
@@ -26,8 +26,8 @@ circle = Circle(sprites)
 block = Block(sprites)
 ball = Ball(sprites)
 
-font = pygame.font.Font(None, 36)  # Default font and size 36 for the instruction text
-small_font = pygame.font.Font(None, 24)  # Smaller font for the counters
+font = pygame.font.Font(None, 36)
+small_font = pygame.font.Font(None, 24)
 
 def reset_game():
     global game_active, start_time, game_time, tap_count, previous_game_time, previous_tap_count, round_won
@@ -40,7 +40,7 @@ def reset_game():
     round_won = False  # Reset the round won state
 
 def draw_text(screen, text, position, font):
-    text_surface = font.render(text, True, (255, 255, 255))  # White color text
+    text_surface = font.render(text, True, (255, 255, 255))
     text_rect = text_surface.get_rect(center=position)
     screen.blit(text_surface, text_rect.topleft)
 
@@ -90,7 +90,7 @@ while running:
         draw_text(screen, "Press the spacebar to begin the next round", (configs.SCREEN_WIDTH // 2, configs.SCREEN_HEIGHT // 2 + 130), very_small_font)
 
     else:
-        # Display the text above the circle when the game hasn't started
+        # Display text above circle when game hasn't started
         circle_rect = circle.rect
         draw_text(screen, "Tap spacebar to begin", (circle_rect.centerx, circle_rect.top - 50), font)
         draw_text(screen, "Hit the paddle 10x", (circle_rect.centerx, circle_rect.top - 20), small_font)
