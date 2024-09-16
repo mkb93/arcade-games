@@ -27,6 +27,7 @@ class NodeGroup(object):
         self.createNodeTable(data)
         self.connectHorizontally(data)
         self.connectVertically(data)
+        self.homekey = None
 
     def readMazeFile(self, textfile):
         return np.loadtxt(textfile, dtype='<U1')
@@ -37,7 +38,23 @@ class NodeGroup(object):
                 if data[row][col] in self.nodeSymbols:
                     x, y = self.constructKey(col+xoffset, row+yoffset)
                     self.nodesLUT[(x, y)] = Node(x, y)
+    def createHomeNodes(self, xoffset, yoffset):
+        homedata = np.array([['X','X','+','X','X'],
+                             ['X','X','.','X','X'],
+                             ['+','X','.','X','+'],
+                             ['+','.','+','.','+'],
+                             ['+','X','X','X','+']])
 
+        self.createNodeTable(homedata, xoffset, yoffset)
+        self.connectHorizontally(homedata, xoffset, yoffset)
+        self.connectVertically(homedata, xoffset, yoffset)
+        self.homekey = self.constructKey(xoffset+2, yoffset)
+        return self.homekey
+    def connectHomeNodes(self, homekey, otherkey, direction):     
+        key = self.constructKey(*otherkey)
+        self.nodesLUT[homekey].neighbors[direction] = self.nodesLUT[key]
+        self.nodesLUT[key].neighbors[direction*-1] = self.nodesLUT[homekey]
+        
     def constructKey(self, x, y):
         return x * TILEWIDTH, y * TILEHEIGHT
 
