@@ -3,6 +3,7 @@ from pygame.locals import *
 from vector import Vector2
 from constants import *
 from entity import Entity
+from sprites import PacmanSprites
 
 class Pacman(Entity):
     def __init__(self, node):
@@ -19,8 +20,18 @@ class Pacman(Entity):
         self.setPosition()
         self.target = node
         self.collideRadius = 5
+        self.alive = True
+        self.sprites = PacmanSprites(self)
+    
+    def reset(self):
+        Entity.reset(self)
+        self.direction = LEFT
+        self.setBetweenNodes(LEFT)
+        self.alive = True
 
-
+    def die(self):
+        self.alive = False
+        self.direction = STOP
 
 
     def setPosition(self):

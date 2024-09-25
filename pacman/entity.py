@@ -19,7 +19,13 @@ class Entity(object):
         self.goal = None
         self.directionMethod = self.randomDirection
         self.setStartNode(node)
+        self.image = None
 
+    def reset(self):
+        self.setStartNode(self.startNode)
+        self.direction = STOP
+        self.speed = 100
+        self.visible = True
     def setStartNode(self, node):
         self.node = node
         self.startNode = node
@@ -65,7 +71,9 @@ class Entity(object):
         self.speed = speed * TILEWIDTH / 16
 
     def render(self, screen):
-        if self.visible:
+        if self.image is not None:
+            screen.blit(self.image, self.position.asTuple())
+        else:
             p = self.position.asInt()
             pygame.draw.circle(screen, self.color, p, self.radius)
     

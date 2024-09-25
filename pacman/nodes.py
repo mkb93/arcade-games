@@ -7,6 +7,18 @@ class Node(object):
     def __init__(self, x, y):
         self.position = Vector2(x, y)
         self.neighbors = {UP:None, DOWN:None, LEFT:None, RIGHT:None, PORTAL: None}
+        self.access = {UP:[PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT],
+                       DOWN:[PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT],
+                       LEFT:[PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT],
+                       RIGHT:[PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT]}
+
+    def denyAccess(self, direction, entity):
+        if entity.name in self.access[direction]:
+            self.access[direction].remove(entity.name)
+
+    def allowAccess(self, direction, entity):
+        if entity.name not in self.access[direction]:
+            self.access[direction].append(entity.name)
 
 
     def render(self, screen):
@@ -54,7 +66,7 @@ class NodeGroup(object):
         key = self.constructKey(*otherkey)
         self.nodesLUT[homekey].neighbors[direction] = self.nodesLUT[key]
         self.nodesLUT[key].neighbors[direction*-1] = self.nodesLUT[homekey]
-        
+
     def constructKey(self, x, y):
         return x * TILEWIDTH, y * TILEHEIGHT
 

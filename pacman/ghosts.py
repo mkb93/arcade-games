@@ -4,6 +4,7 @@ from vector import Vector2
 from constants import *
 from entity import Entity
 from modes import ModeController
+from sprites import GhostSprites
 
 class Ghost(Entity):
     def __init__(self, node, pacman=None, blinky=None):
@@ -24,6 +25,11 @@ class Ghost(Entity):
         elif self.mode.current is CHASE:
             self.chase()
         Entity.update(self, dt)
+    
+    def reset(self):
+        Entity.reset(self)
+        self.points = 200
+        self.directionMethod = self.goalDirection
 
     def scatter(self):
         self.goal = Vector2()
@@ -57,12 +63,14 @@ class Blinky(Ghost):
         Ghost.__init__(self, node, pacman, blinky)
         self.name = BLINKY
         self.color = RED
+        self.sprites = GhostSprites(self)
 
 class Pinky(Ghost):
     def __init__(self, node, pacman=None, blinky=None):
         Ghost.__init__(self, node, pacman, blinky)
         self.name = PINKY
         self.color = PINK
+        self.sprites = GhostSprites(self)
 
     def scatter(self):
         self.goal = Vector2(TILEWIDTH*NCOLS, 0)
@@ -75,6 +83,7 @@ class Inky(Ghost):
         Ghost.__init__(self, node, pacman, blinky)
         self.name = INKY
         self.color = TEAL
+        self.sprites = GhostSprites(self)
 
     def scatter(self):
         self.goal = Vector2(TILEWIDTH*NCOLS, TILEHEIGHT*NROWS)
@@ -88,6 +97,7 @@ class Clyde(Ghost):
         Ghost.__init__(self, node, pacman, blinky)
         self.name = CLYDE
         self.color = ORANGE
+        self.sprites = GhostSprites(self)
 
     def scatter(self):
         self.goal = Vector2(0, TILEHEIGHT*NROWS)
@@ -131,10 +141,6 @@ class GhostGroup(object):
         for ghost in self:
             ghost.points = 200
 
-    def reset(self):
-        for ghost in self:
-            ghost.reset()
-
     def hide(self):
         for ghost in self:
             ghost.visible = False
@@ -142,6 +148,10 @@ class GhostGroup(object):
     def show(self):
         for ghost in self:
             ghost.visible = True
+    
+    def reset(self):
+        for ghost in self:
+            ghost.reset()
 
     def render(self, screen):
         for ghost in self:
