@@ -86,7 +86,7 @@ def run_pacman_game():
     os.chdir("..")
     
     # Change directory to Pacman_Complete
-    os.chdir("./Pacman_Complete")
+    os.chdir("./pacman")
     
     # Run the Pacman game script
     subprocess.run(["python", "run.py"])

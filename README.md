@@ -36,4 +36,19 @@ git clone https://github.com/yourusername/arcade-simulator.git
 Navigate to the Project Directory:
 ```bash
 cd arcade-simulator
+cd pong 
 ```
+
+Run the game from the pong file:
+```bash
+python main.py
+```
+
+### MRS_Pacwoman 
+  if you played the other games and the set up went smoothly try mrs_pacwoman. Its the same game rules just different sprites(images used for the characters/objects)
+  you can run it if you 
+  ```bash
+  cd mrs_pacwoman
+  python run.py
+  ```
+
