@@ -71,11 +71,14 @@ class Entity(object):
         self.speed = speed * TILEWIDTH / 16
 
     def render(self, screen):
-        if self.image is not None:
-            screen.blit(self.image, self.position.asTuple())
-        else:
-            p = self.position.asInt()
-            pygame.draw.circle(screen, self.color, p, self.radius)
+        if self.visible: 
+            if self.image is not None:
+                adjust = Vector2(TILEWIDTH, TILEHEIGHT) / 2
+                p = self.position - adjust
+                screen.blit(self.image, p.asTuple())
+            else:
+                p = self.position.asInt()
+                pygame.draw.circle(screen, self.color, p, self.radius)
     
     def validDirections(self):
         directions = []
